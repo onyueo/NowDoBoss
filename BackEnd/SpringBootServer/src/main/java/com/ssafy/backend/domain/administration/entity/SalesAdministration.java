@@ -10,9 +10,9 @@ import org.hibernate.annotations.Comment;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class StoreAdministration {
+public class SalesAdministration {
     @Id
-    @Comment("점포_행정동_아이디")
+    @Comment("추정매출_행정동_아이디")
     @Column(columnDefinition = "INT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,6 @@ public class StoreAdministration {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String administrationCodeName;
 
-
     @Comment("서비스 업종 코드")
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
     private String serviceCode;
@@ -42,31 +41,16 @@ public class StoreAdministration {
     @Comment("서비스 업종 타입")
     private ServiceType serviceType;
 
-    @Comment("점포 수")
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long totalStore;
+    @Comment("당월 매출 금액")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    private Long monthSales;
 
-    @Comment("유사 업종 점포 수")
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long similarStore;
+    @Comment("주중 매출 금액")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    private Long weekdaySales;
 
-    @Comment("개업 점포 수")
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long openedStore;
+    @Comment("주말 매출 금액")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    private Long weekendSales;
 
-    @Comment("폐업 점포 수")
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long closedStore;
-
-    @Comment("프랜차이즈 점포 수")
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long franchiseStore;
-
-    @Comment("개업률")
-    @Column(columnDefinition = "Float")
-    private Float openedRate;
-
-    @Comment("폐업률")
-    @Column(columnDefinition = "Float")
-    private Float closedRate;
 }
