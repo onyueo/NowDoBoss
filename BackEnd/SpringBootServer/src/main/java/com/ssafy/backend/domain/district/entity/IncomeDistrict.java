@@ -13,9 +13,9 @@ import org.hibernate.annotations.Comment;
         @Index(name = "idx_period_code", columnList = "periodCode"),
         @Index(name = "idx_district_code", columnList = "districtCode")
 })
-public class ChangeDistrict {
+public class IncomeDistrict {
     @Id
-    @Comment("상권 변화 지표 자치구 아이디")
+    @Comment("소득소비_자치구 아이디")
     @Column(columnDefinition = "INT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,17 +32,7 @@ public class ChangeDistrict {
     @Column(columnDefinition = "VARCHAR(10)", nullable = false)
     private String districtCodeName;
 
-    @Comment("상권 변화 지표")
-    @Column(columnDefinition = "VARCHAR(5)")
-    private String changeIndicator;
-
-    @Comment("상권 변화 지표 명")
-    @Column(columnDefinition = "VARCHAR(15)")
-    private String changeIndicatorName;
-
-    @Comment("운영 영업 개월 평균")
-    private int openedMonths;
-
-    @Comment("폐업 영업 개월 평균")
-    private int closedMonths;
+    @Comment("지출 총금액")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    private Long totalPrice;
 }
