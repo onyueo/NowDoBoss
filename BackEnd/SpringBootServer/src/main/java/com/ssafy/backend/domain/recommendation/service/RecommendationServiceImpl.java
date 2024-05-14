@@ -4,6 +4,10 @@ package com.ssafy.backend.domain.recommendation.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.backend.global.common.document.DataDocument;
+import com.ssafy.backend.global.common.repository.DataRepository;
+import com.ssafy.backend.global.component.kafka.KafkaConstants;
+import com.ssafy.backend.global.component.kafka.producer.KafkaProducer;
 import reactor.core.publisher.Flux;
 
 import com.mongodb.MongoWriteException;
@@ -25,7 +29,6 @@ import com.ssafy.backend.domain.recommendation.dto.response.UserResponse;
 import com.ssafy.backend.domain.recommendation.repository.RecommendationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
@@ -51,7 +54,8 @@ public class RecommendationServiceImpl implements RecommendationService{
     private final AreaCommercialRepository areaCommercialRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final RecommendationRepository recommendationRepository;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaProducer kafkaProducer;
+    private final DataRepository dataRepository;
 
     @Override
     public Mono<List<RecommendationResponse>> getTopThreeRecommendations(String districtCode, String administrationCode, Long id) {
@@ -121,9 +125,13 @@ public class RecommendationServiceImpl implements RecommendationService{
                 });
                 for (RecommendationResponse dto: list){
                     if (dto.commercialCode().equals(commercialCode)){
+                        // 카프카 이벤트 발생
+                        CommercialKafkaInfo commercialKafkaInfo = new CommercialKafkaInfo(id, "recommendation", 1L, commercialCode, System.currentTimeMillis());
+                        String response = objectMapper.writeValueAsString(commercialKafkaInfo);
+                        kafkaProducer.publish(KafkaConstants.KAFKA_TOPIC_RECOMMENDATION, response);
+
                         try {
-                            String action = "save";
-                            RecommendationDocument document = new RecommendationDocument(id, Long.parseLong(commercialCode), action);
+                            RecommendationDocument document = new RecommendationDocument(id, commercialCode);
                             recommendationRepository.save(document);
                         } catch (MongoWriteException e) {
                             if (e.getError().getCode() == 11000) {
@@ -132,11 +140,6 @@ public class RecommendationServiceImpl implements RecommendationService{
                                 throw e; // 다른 종류의 쓰기 에러 처리
                             }
                         }
-
-                        // 카프카 이벤트 발생
-                        CommercialKafkaInfo commercialKafkaInfo = new CommercialKafkaInfo(id, "save", 1L, commercialCode, System.currentTimeMillis());
-                        String response = objectMapper.writeValueAsString(commercialKafkaInfo);
-                        kafkaTemplate.send("recommendation", response);
                         break;
                     }
                 }
