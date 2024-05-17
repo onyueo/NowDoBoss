@@ -139,7 +139,7 @@ public class SimulationServiceImpl implements SimulationService {
 
         //////////////////////////////////////////////////////////// 프랜차이즈 상위 5개 비교
         // 비용(원) >> 보증금 + 임대료 + 아래 내용
-        long franchiseePrice = rentPrice + deposit;
+
 
         
         // TODO 현재 계산결과가 조금 이상 >> 확인해보기
@@ -149,9 +149,11 @@ public class SimulationServiceImpl implements SimulationService {
         // if 창업 >> totalLevy X
         // if 프랜차이즈 >> totalLevy O
         investmentCost /= TEN_THOUSAND_MULTIPLIER;
-        investmentCost += keyMoneyInfo.keyMoney() + request.facilityFee() + request.otherInvestmentCosts();
+        investmentCost += (keyMoneyInfo.keyMoney() + request.facilityFee() + request.otherInvestmentCosts());
 
         log.info("투자비 : {}", investmentCost);
+
+        long franchiseePrice = rentPrice + deposit + keyMoneyInfo.keyMoney() + request.facilityFee() + request.otherInvestmentCosts();
 
         List<FranchiseeInfo> franchisees = franchiseeRepository.findByServiceCode(franchiseePrice, investmentCost * TEN_THOUSAND_MULTIPLIER, request.serviceCode());
 
@@ -166,7 +168,7 @@ public class SimulationServiceImpl implements SimulationService {
         
         // 고정비
         FixedCostInfo fixedCostInfo = FixedCostInfo.builder()
-                .rentPrice(rentPrice)
+                .rentPrice(rentPrice / TEN_THOUSAND_MULTIPLIER)
                 .personnelExpenses(request.personnelExpenses())
                 .depreciation(depreciation)
                 .loanInterest((long) (request.loan() * request.interestRate() / 100.0))
@@ -205,7 +207,7 @@ public class SimulationServiceImpl implements SimulationService {
         long averageDailyTargetSalesX = breakEvenX / workDate;
 
         // 일평균 목표고객수 = 일평균 목표매출 / 객단가
-        long customersPerDayX = averageDailyTargetSalesX / request.perGuestPrice();
+        long customersPerDayX = (long) (averageDailyTargetSalesX / ((double) request.perGuestPrice() / TEN_THOUSAND_MULTIPLIER));
 
         targetSalesInfos.add(TargetSalesInfo.builder()
                 .monthlyTargetSales(breakEvenX)
@@ -218,7 +220,7 @@ public class SimulationServiceImpl implements SimulationService {
 
         //////// 투자금 회수 O
         // 회수기간 >> 2년, 3년 이내 회수가능
-        for (int year = 2; year >= 3; year++) {
+        for (int year = 2; year <= 3; year++) {
             // 월 추정경상이익 = 투자비(입력받았던 값, 권리금 + 시설비 + 가맹관련 + 기타 비용 + 보증금) / 회수기간(개월수)
             long monthlyEstimatedOrdinaryProfitO = investmentCost / (12 * year);
 
@@ -233,7 +235,7 @@ public class SimulationServiceImpl implements SimulationService {
             long averageDailyTargetSalesO = monthlyTargetSalesO / workDate;
 
             // 일평균 목표고객수 = 일평균 목표매출 / 객단가
-            long customersPerDayO = (long) (averageDailyTargetSalesO / (request.perGuestPrice() / 100.0));
+            long customersPerDayO = (long) (averageDailyTargetSalesO/ ((double) request.perGuestPrice() / TEN_THOUSAND_MULTIPLIER));
 
             targetSalesInfos.add(TargetSalesInfo.builder()
                     .monthlyTargetSales(monthlyTargetSalesO)
@@ -244,30 +246,7 @@ public class SimulationServiceImpl implements SimulationService {
                     .build());
         }
 
-        /*/////// 투자금 회수 X
-        // 손익분기의 월 추정경상이익 = 0
-        long monthlyEstimatedOrdinaryProfitX = 0;
 
-
-        // 손익분기 = (총비용 + 0.07 * 월 추정경상이익) / 0.93 >> 투자금 회수 X인 월 목표매출
-        long breakEvenX = (long) ((monthlyCost + 0.07 * monthlyEstimatedOrdinaryProfitX)/ 0.93);
-
-        // 세금
-        long taxX = (long) (breakEvenX * 0.07);
-
-        // 일 평균 목표 매출 = 월 목표 매출 / 근무일(24일)
-        long averageDailyTargetSalesX = breakEvenX / workDate;
-
-        // 일평균 목표고객수 = 일평균 목표매출 / 객단가
-        long customersPerDayX = (long) (averageDailyTargetSalesX / (request.perGuestPrice() / 100.0));
-
-        targetSalesInfos.add(TargetSalesInfo.builder()
-                .monthlyTargetSales(breakEvenX)
-                .averageDailyTargetSales(averageDailyTargetSalesX)
-                .customersPerDay(customersPerDayX)
-                .tax(taxX)
-                .monthlyEstimatedOrdinaryProfit(monthlyEstimatedOrdinaryProfitX)
-                .build());*/
 
         return SimulationResponse.builder()
                 .investmentCost(investmentCost)
