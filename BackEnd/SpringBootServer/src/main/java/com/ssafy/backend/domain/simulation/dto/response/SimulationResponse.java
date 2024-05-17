@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SimulationResponse {
-    // 전체 비용, 단위: 원
-    private Long totalPrice;
+    // 투자 비용, 단위: 만원
+    private Long investmentCost;
 
     // 권리금 관련 데이터
     private KeyMoneyInfo keyMoneyInfo;
@@ -30,4 +30,16 @@ public class SimulationResponse {
 
     // 성수기, 비성수기
     private MonthAnalysisInfo monthAnalysisInfo;
+
+    // 매달 총 비용 >> 고정비 + 변동비
+    private long monthlyCost;
+
+    // 고정비
+    private FixedCostInfo fixedCostInfo;
+
+    // 변동비
+    private VariableCostInfo variableCostInfo;
+
+    // 3년 회수, 2년 회수, 손익분기
+    private List<TargetSalesInfo> targetSalesInfos;
 }
