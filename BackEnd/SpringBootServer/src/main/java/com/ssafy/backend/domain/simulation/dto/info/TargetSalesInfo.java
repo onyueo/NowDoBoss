@@ -26,7 +26,4 @@ public class TargetSalesInfo {
 
     // 월 추정경상이익 = 투자비(입력받았던 값, 권리금 + 시설비 + 가맹관련 + 기타 비용 + 보증금) / 회수기간(개월수)
     private long monthlyEstimatedOrdinaryProfit;
-
-
-
 }

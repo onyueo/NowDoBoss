@@ -25,7 +25,7 @@ public class FixedCostInfo {
     /**
      * 
      * @param rentPrice 임대료
-     * @param personnelExpenses 인건비
+     * @param personnelExpenses 고정 인건비
      * @param depreciation 감가상각비
      * @param loanInterest 대출금 이자
      * @param investmentCost 총투자비
