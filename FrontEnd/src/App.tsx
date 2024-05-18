@@ -1,13 +1,6 @@
 import { CookiesProvider } from 'react-cookie'
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useLocation,
-  matchPath,
-} from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import GlobalStyles from '@src/GlobalStyles.tsx'
-import Header from '@src/common/Header'
 import MainPage from '@src/pages/MainPage'
 import SignUpPage from '@src/pages/SignUpPage'
 import SignUpGeneralPage from '@src/pages/SignUpGeneralPage'
@@ -38,10 +31,14 @@ import CommunityListPage from '@src/pages/CommunityListPage'
 import { useEffect } from 'react'
 import ChattingListPage from '@src/pages/ChattingListPage'
 import ChattingDetailPage from '@src/pages/ChattingDetailPage'
+import SweetAlert2 from '@src/SweetAlert2'
 import './index.css'
 
 // firebase config 파일 실행
 import '@src/util/auth/firebaseMessage'
+
+// 헤더 여부 설정하는 파일
+import ConditionalHeader from '@src/util/ConditionalHeader'
 
 declare global {
   interface Window {
@@ -59,28 +56,12 @@ function App() {
     setScreenSize()
   })
 
-  // 헤더 사용하지 않는 페이지 예외 적용
-  const ConditionalHeader = () => {
-    const location = useLocation()
-    const currentPathname = location.pathname
-
-    if (
-      // matchPath(비교 경로, 현재 경로)
-      matchPath('/login', currentPathname) ||
-      matchPath('/register', currentPathname) ||
-      matchPath('/account-deleted', currentPathname)
-    ) {
-      return null
-    }
-    return <Header />
-  }
-
   return (
     <CookiesProvider>
       <GlobalStyles />
+      <SweetAlert2 />
       <BrowserRouter>
         <ConditionalHeader />
-
         <Routes>
           <Route path="/" element={<MainPage />} />
           {/* 회원 */}
