@@ -8,6 +8,11 @@ import SalesSummaryCard from '@src/components/analysis/SalesSummaryCard'
 import TipBox from '@src/components/analysis/TipBox'
 import TotalSummaryCard from '@src/components/analysis/TotalSummaryCard'
 import * as r from '@src/components/styles/analysis/ResultIntroStyle'
+import { useMutation } from '@tanstack/react-query'
+import { reportAnalysisKaKaoUrl } from '@src/api/kakaoShareApi'
+import { AnalysisDataType } from '@src/types/KaKaoShareType'
+
+const { Kakao } = window
 
 const ResultIntro = (props: ResultIntroPropsType) => {
   const { handlePostAnalysisBookmarks } = props
@@ -45,6 +50,52 @@ const ResultIntro = (props: ResultIntroPropsType) => {
     }
   }, [selectedServiceType])
 
+  // 카카오톡 공유
+  useEffect(() => {
+    Kakao.cleanup()
+    Kakao.init('e55da734c04c78fcc069c3dab68f3c1e')
+    // console.log(Kakao.isInitialized())
+  }, [])
+
+  // 카카오톡 share 탬플릿
+  const serverUrl = 'http://localhost:5173'
+  // const serverUrl = 'https://k10c208.p.ssafy.io'
+  const shareKakao = (data: string) => {
+    window.Kakao.Link.sendCustom({
+      templateId: 107914,
+      templateArgs: {
+        Server_Url: serverUrl,
+        Path: 'share',
+        Token: data,
+      },
+    })
+  }
+
+  // 카톡 공유 temp
+  const { mutate: mutateKakaoReport } = useMutation({
+    mutationFn: reportAnalysisKaKaoUrl,
+    onSuccess: res => {
+      shareKakao(res.dataBody.token)
+    },
+    onError: error => {
+      console.error(error)
+    },
+  })
+
+  const onClickShare = () => {
+    const reportCreateData: AnalysisDataType = {
+      url: `${serverUrl}/api/v1/analysis`,
+      input: {
+        districtCode: selectedGoo.code,
+        administrationCode: selectedDong.code,
+        commercialCode: selectedCommercial.code,
+        serviceCode: selectedService.serviceCode,
+        periodCode: null,
+      },
+    }
+    mutateKakaoReport(reportCreateData)
+  }
+
   return (
     <r.Container>
       <r.LeftWrap>
@@ -69,7 +120,7 @@ const ResultIntro = (props: ResultIntroPropsType) => {
             </r.BookmarksDiv>
           )}
         </r.InfoDiv>
-        <r.ShareBox>
+        <r.ShareBox onClick={onClickShare}>
           <r.ShareBoxText>카카오톡 공유 바로가기</r.ShareBoxText>
         </r.ShareBox>
       </r.LeftWrap>
