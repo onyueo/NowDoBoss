@@ -24,3 +24,11 @@ export const reportAnalysisKaKaoUrl = async (data: AnalysisDataType) => {
     .then(res => res.data)
     .catch(err => console.log(err))
 }
+
+// 상권분석 카카오톡 공유->요청
+export const fetchAnalysisKaKaoUrl = async (token: string) => {
+  return customAxios
+    .get(`/share/${token}`)
+    .then(res => res.data)
+    .catch(err => console.log(err))
+}

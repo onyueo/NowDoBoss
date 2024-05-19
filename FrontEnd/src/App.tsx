@@ -32,6 +32,7 @@ import { useEffect } from 'react'
 import ChattingListPage from '@src/pages/ChattingListPage'
 import ChattingDetailPage from '@src/pages/ChattingDetailPage'
 import ReportKakaoSharePage from '@src/pages/ReportKakaoSharePage'
+import AnalysisReportKakaoSharePage from '@src/pages/AnalysisReportKakaoSharePage'
 import SweetAlert2 from '@src/SweetAlert2'
 import JSConfetti from 'js-confetti'
 import './index.css'
@@ -121,6 +122,10 @@ function App() {
         </Route>
         {/*  시뮬레이션 카카오 공유 페이지 */}
         <Route path="/share/:token" element={<ReportKakaoSharePage />} />
+        <Route
+          path="/share/analysis/:token"
+          element={<AnalysisReportKakaoSharePage />}
+        />
       </Routes>
     </CookiesProvider>
   )

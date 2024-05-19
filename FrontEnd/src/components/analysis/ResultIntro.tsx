@@ -65,7 +65,7 @@ const ResultIntro = (props: ResultIntroPropsType) => {
       templateId: 107914,
       templateArgs: {
         Server_Url: serverUrl,
-        Path: 'share',
+        Path: 'share/analysis',
         Token: data,
       },
     })
@@ -95,6 +95,7 @@ const ResultIntro = (props: ResultIntroPropsType) => {
     }
     mutateKakaoReport(reportCreateData)
   }
+  console.log(onClickShare)
 
   return (
     <r.Container>
@@ -120,9 +121,9 @@ const ResultIntro = (props: ResultIntroPropsType) => {
             </r.BookmarksDiv>
           )}
         </r.InfoDiv>
-        <r.ShareBox onClick={onClickShare}>
-          <r.ShareBoxText>카카오톡 공유 바로가기</r.ShareBoxText>
-        </r.ShareBox>
+        {/* <r.ShareBox onClick={onClickShare}> */}
+        {/*  <r.ShareBoxText>카카오톡 공유 바로가기</r.ShareBoxText> */}
+        {/* </r.ShareBox> */}
       </r.LeftWrap>
       <r.RightWrap>
         <r.SummaryWrap>

@@ -9,7 +9,6 @@ const ReportKakaoShareContainer = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  console.log(location, '받아온 위치')
   const { mutate: mutateCreateReport } = useMutation({
     mutationFn: reportCreates,
     onSuccess: res => {
