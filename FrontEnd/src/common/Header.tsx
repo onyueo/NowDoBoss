@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { NavigateType } from '@src/types/GlobalType'
 // import LogoImg from '@src/assets/logo.svg'
-import SlimLogoImg from '@src/assets/logo_slim.svg'
-// import BlueLogoImg from '@src/assets/logo_blue.svg'
+// import SlimLogoImg from '@src/assets/logo_slim.svg'
+import BlueLogoImg from '@src/assets/logo_blue.svg'
+import WhiteLogo from '@src/assets/whiteLogo.svg'
 import BlueChatImg from '@src/assets/chatBlue.svg'
 import ChatImg from '@src/assets/chatHeader.svg'
 import WhiteChatImg from '@src/assets/chatWhite.svg'
@@ -315,7 +316,12 @@ const Header = () => {
       $isMain={location.pathname === '/'}
     >
       <LogoDiv onClick={() => goNavigate({ url: '/' })}>
-        <Logo src={SlimLogoImg} alt="logo" />
+        {/* <Logo src={SlimLogoImg} alt="logo" /> */}
+        {location.pathname === '/' && atTop ? (
+          <Logo src={WhiteLogo} alt="logo" />
+        ) : (
+          <Logo src={BlueLogoImg} alt="logo" />
+        )}
       </LogoDiv>
 
       <MenuListLeft>
