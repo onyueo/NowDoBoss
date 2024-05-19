@@ -5,10 +5,11 @@ export const Container = styled.div`
   top: 69px;
   left: 0;
   background-color: white;
-  width: 500px;
+  width: 600px;
   height: calc(100vh - 68px);
   border: 2px solid white;
   border-left: none;
+  z-index: 10;
 
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
@@ -24,7 +25,7 @@ export const Container = styled.div`
   }
 
   @media only screen and (max-width: 1080px) {
-    width: 450px;
+    width: 500px;
   }
   @media only screen and (max-width: 800px) {
     width: 100vw;
