@@ -1,15 +1,11 @@
 import { useEffect, useRef } from 'react'
 
-const useTabObserver = (
+const useMainObserver = (
   setState: React.Dispatch<React.SetStateAction<number>>,
   stateNumber: number,
 ): React.MutableRefObject<HTMLDivElement | null> => {
   const isRef = useRef<HTMLDivElement>(null)
-  const option = {
-    threshold: 0,
-    rootMargin: `-${document.body.scrollHeight / 2 - 1}px 0px`,
-  }
-  // const option = {}
+  const option = {}
 
   useEffect(() => {
     const observer = new IntersectionObserver(entry => {
@@ -28,4 +24,4 @@ const useTabObserver = (
   return isRef
 }
 
-export default useTabObserver
+export default useMainObserver
