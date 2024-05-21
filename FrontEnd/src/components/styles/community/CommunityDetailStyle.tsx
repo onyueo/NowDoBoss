@@ -90,6 +90,7 @@ export const RowDiv = styled.div`
   justify-content: space-between;
 
   @media only screen and (max-width: 550px) {
+    flex-direction: column;
   }
 `
 export const Category = styled.div`
@@ -115,6 +116,9 @@ export const TimeAndCounting = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
+  @media only screen and (max-width: 550px) {
+    justify-content: start;
+  }
 `
 
 export const ImgDiv = styled.div`
@@ -247,6 +251,8 @@ export const Div = styled.div`
     scale: 1.1;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
 `
 
