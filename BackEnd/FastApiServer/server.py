@@ -1,18 +1,23 @@
-
-from pydantic import BaseModel
-import spark_reco
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
+from pydantic import BaseModel
+import sys
+import os
+
+# Python 경로 추가
+sys.path.append('/opt/venv/lib/python3.12/site-packages')
+
+# PySpark 관련 모듈 임포트
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import lit
+from pyspark.ml.recommendation import ALS, ALSModel
+import numpy as np
+import pandas as pd
 import json
-import scheduler
+
+# spark_reco 모듈 임포트
+import spark_reco
+
 
 app = FastAPI()
-
-# # Spark 세션 초기화
-# spark = SparkSession.builder \
-#     .appName("FastAPI-Spark Integration") \
-#     .getOrCreate()
 
 class Item(BaseModel):
     data: str
@@ -93,8 +98,8 @@ def start_recommend_spark():
     spark = SparkSession.builder \
         .appName("FastAPI-Spark Integration") \
         .master("spark://master1:7077") \
-        .config("spark.pyspark.python", "/opt/venv/bin/python") \
-        .config("spark.pyspark.driver.python", "/opt/venv/bin/python") \
+        .config("spark.pyspark.python", "/opt/miniconda/envs/pyspark_env/bin/python") \
+        .config("spark.pyspark.driver.python", "/opt/miniconda/envs/pyspark_env/bin/python") \
         .config("spark.submit.pyFiles", "spark_reco.py") \
         .getOrCreate()
 
