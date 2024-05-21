@@ -1,14 +1,19 @@
 # 우분투 베이스 이미지 사용
 FROM ubuntu:latest
 
-# 필수 패키지 설치 및 deadsnakes PPA 추가
+# 필수 패키지 설치
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt-get update && apt-get install -y curl openssh-server rsync wget vim iputils-ping htop openjdk-8-jdk python3.12 python3.12-venv python3.12-dev python3-pip
+RUN apt-get install -y wget bzip2 curl openssh-server rsync vim iputils-ping htop openjdk-8-jdk
 
-# python 명령어를 python3.10로 링크
-RUN ln -s /usr/bin/python3.10 /usr/bin/python
+# Miniconda 설치
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda
+ENV PATH=/opt/miniconda/bin:$PATH
+
+# Conda 가상 환경 생성 및 활성화, PySpark 및 필요 라이브러리 설치
+RUN conda create -n pyspark_env python=3.12
+SHELL ["conda", "run", "-n", "pyspark_env", "/bin/bash", "-c"]
+RUN conda install -n pyspark_env pyspark numpy pandas -y
 
 # 하둡 다운로드 및 설치
 RUN wget http://mirror.navercorp.com/apache/hadoop/common/hadoop-3.2.4/hadoop-3.2.4.tar.gz \
@@ -22,18 +27,13 @@ RUN wget https://archive.apache.org/dist/spark/spark-3.4.0/spark-3.4.0-bin-hadoo
     && rm spark-3.4.0-bin-hadoop3.tgz \
     && mv spark-3.4.0-bin-hadoop3 /usr/local/spark
 
-# 가상 환경 생성 및 활성화, PySpark 및 필요 라이브러리 설치
-RUN python3.12 -m venv /opt/venv
-RUN /opt/venv/bin/pip install --upgrade pip
-RUN /opt/venv/bin/pip install pyspark==3.4.0 numpy==1.26.4 pandas==2.0.3
-
 # 환경변수 설정
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV HADOOP_HOME=/usr/local/hadoop
 ENV SPARK_HOME=/usr/local/spark
-ENV PYSPARK_PYTHON=/opt/venv/bin/python
-ENV PYSPARK_DRIVER_PYTHON=/opt/venv/bin/python
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin
+ENV PYSPARK_PYTHON=/opt/miniconda/envs/pyspark_env/bin/python
+ENV PYSPARK_DRIVER_PYTHON=/opt/miniconda/envs/pyspark_env/bin/python
 
 # 디렉토리 생성
 RUN mkdir -p /usr/local/bin /usr/local/bin/master /usr/local/bin/worker
