@@ -55,8 +55,9 @@ export const MainContentDiv = styled.div`
   padding: 10px 0;
 
   @media only screen and (max-width: 992px) {
-    margin: 0 10%;
-    width: 80%;
+    margin: 0 5%;
+
+    width: 90%;
   }
 `
 
@@ -64,15 +65,16 @@ export const Div = styled.div``
 
 export const Mid = styled.div`
   margin: 3% 5%;
-  width: 100%;
+  width: 90%;
   height: calc(100vh - 68px);
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
 
   @media only screen and (max-width: 992px) {
-    margin: 3% 10%;
-    width: 80%;
+    margin: 3% 5%;
+    width: 90%;
+    height: 94%;
   }
 `
 export const List = styled.div`
